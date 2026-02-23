@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.notion.so)",
+      "Bash(claude mcp:*)",
+      "mcp__notion__notion-fetch",
+      "Bash(cd \"C:\\\\Users\\\\franc\\\\OneDrive\\\\Desktop\\\\book-and-play-client\" && pnpm dlx shadcn@latest add form input select textarea card label sonner --yes 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\franc\\\\OneDrive\\\\Desktop\\\\book-and-play-client\" && pnpm build 2>&1)"
+    ]
+  }
+}
