@@ -18,7 +18,7 @@ import {
   Plus,
   RefreshCw,
 } from "lucide-react";
-import { useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("es-AR", {
@@ -110,6 +110,9 @@ export function BusinessPage() {
       </main>
     );
   }
+  if (businesses.length === 1) {
+    return <Navigate to={`/businesses/${businesses[0].id}`} />;
+  }
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-5">
@@ -131,7 +134,11 @@ export function BusinessPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {businesses.map((business) => (
-          <Card key={business.id} className="shadow-sm">
+          <Card
+            key={business.id}
+            className="shadow-sm cursor-pointer hover:border-primary/40 transition-colors"
+            onClick={() => navigate(`/businesses/${business.id}`)}
+          >
             <CardHeader className="pb-3">
               <CardTitle className="text-lg leading-tight">
                 {business.name}

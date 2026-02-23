@@ -1,4 +1,5 @@
 import { BusinessPage } from "@/pages/admin/business/BusinessPage";
+import { BusinessDetailPage } from "@/pages/admin/business/detail/BusinessDetailPage";
 import { CreateBusinessPage } from "@/pages/admin/business/components/create/CreateBusinessPage";
 import { HomePage } from "@/pages/admin/home/HomePage";
 
@@ -32,6 +33,12 @@ export const homeRoutes: TRoute[] = [
     path: "/businesses/new",
     label: "Nuevo Negocio",
     element: <CreateBusinessPage />,
+    vissibleNavbar: false,
+  },
+  {
+    path: "/businesses/:businessId",
+    label: "Detalle del negocio",
+    element: <BusinessDetailPage />,
     vissibleNavbar: false,
   },
 ];
