@@ -7,4 +7,9 @@ export const CourtExceptionSchema = z.object({
   createdAt: z.string().datetime(),
 });
 
+export const CreateCourtExceptionSchema = z.object({
+  exceptionRuleId: z.string().uuid(),
+});
+
 export type TCourtException = z.infer<typeof CourtExceptionSchema>;
+export type TCreateCourtExceptionInput = z.infer<typeof CreateCourtExceptionSchema>;

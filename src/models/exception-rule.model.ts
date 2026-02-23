@@ -12,4 +12,16 @@ export const ExceptionRuleSchema = z.object({
   updatedAt: z.string().datetime(),
 });
 
+export const CreateExceptionRuleSchema = z.object({
+  date: z.string(),
+  startTime: z.string().optional(),
+  endTime: z.string().optional(),
+  isAvailable: z.boolean(),
+  reason: z.string().optional(),
+});
+
+export const UpdateExceptionRuleSchema = CreateExceptionRuleSchema.partial();
+
 export type TExceptionRule = z.infer<typeof ExceptionRuleSchema>;
+export type TCreateExceptionRuleInput = z.infer<typeof CreateExceptionRuleSchema>;
+export type TUpdateExceptionRuleInput = z.infer<typeof UpdateExceptionRuleSchema>;

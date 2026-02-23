@@ -7,4 +7,9 @@ export const CourtAvailabilitySchema = z.object({
   createdAt: z.string().datetime(),
 });
 
+export const CreateCourtAvailabilitySchema = z.object({
+  availabilityRuleId: z.string().uuid(),
+});
+
 export type TCourtAvailability = z.infer<typeof CourtAvailabilitySchema>;
+export type TCreateCourtAvailabilityInput = z.infer<typeof CreateCourtAvailabilitySchema>;

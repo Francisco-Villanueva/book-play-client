@@ -1,0 +1,22 @@
+import { ACCESS_TOKEN_KEY } from "@/context/auth.context";
+import { CourtAvailabilityService } from "@/services/court-availability.service";
+import { setAuthInterceptor } from "@/utils/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+const removeCourtAvailability = async (courtId: string): Promise<void> => {
+  await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
+  await CourtAvailabilityService.removeCourtAvailability(courtId);
+};
+
+export const useRemoveCourtAvailabilityMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: removeCourtAvailability,
+    mutationKey: ["court-availability"],
+    onSuccess: (_, courtId) => {
+      queryClient.invalidateQueries({
+        queryKey: ["court", courtId, "availability"],
+      });
+    },
+  });
+};

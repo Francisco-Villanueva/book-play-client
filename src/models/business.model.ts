@@ -28,5 +28,8 @@ export const CreateBusinessSchema = z.object({
     }),
 });
 
+export const UpdateBusinessSchema = CreateBusinessSchema.partial();
+
 export type TBusiness = z.infer<typeof BusinessSchema>;
 export type TCreateBusinessInput = z.infer<typeof CreateBusinessSchema>;
+export type TUpdateBusinessInput = z.infer<typeof UpdateBusinessSchema>;
