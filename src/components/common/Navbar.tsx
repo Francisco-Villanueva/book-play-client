@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth.context";
+import { homeRoutes } from "@/routes/home.routes";
 import { LogOut } from "lucide-react";
 
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export function Navbar() {
   const { logout } = useAuth();
@@ -40,6 +41,28 @@ export function Navbar() {
             Book & Play
           </span>
         </div>
+        <nav className="flex">
+          {homeRoutes.map((route) =>
+            route.vissibleNavbar ? (
+              <Link
+                key={route.path}
+                to={route.path}
+                className="text-muted-foreground hover:text-foreground flex items-center gap-1.5"
+              >
+                <Button
+                  key={route.path}
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  {route.icon}
+                  <span className="ml-2">{route.label}</span>
+                </Button>
+              </Link>
+            ) : null,
+          )}
+        </nav>
+
         <Button
           variant="ghost"
           size="sm"

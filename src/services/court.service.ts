@@ -1,5 +1,9 @@
 import { axiosInstance } from "@/utils/api";
-import type { TCourt, TCreateCourtInput, TUpdateCourtInput } from "@/models/court.model";
+import type {
+  TCourt,
+  TCreateCourtInput,
+  TUpdateCourtInput,
+} from "@/models/court.model";
 
 export class CourtService {
   static async getCourts(businessId: string): Promise<TCourt[]> {
@@ -12,12 +16,21 @@ export class CourtService {
     return res.data;
   }
 
-  static async createCourt(businessId: string, data: TCreateCourtInput): Promise<TCourt> {
-    const res = await axiosInstance.post(`/businesses/${businessId}/courts`, data);
+  static async createCourt(
+    businessId: string,
+    data: TCreateCourtInput,
+  ): Promise<TCourt> {
+    const res = await axiosInstance.post(
+      `/businesses/${businessId}/courts`,
+      data,
+    );
     return res.data;
   }
 
-  static async updateCourt(courtId: string, data: TUpdateCourtInput): Promise<TCourt> {
+  static async updateCourt(
+    courtId: string,
+    data: TUpdateCourtInput,
+  ): Promise<TCourt> {
     const res = await axiosInstance.patch(`/courts/${courtId}`, data);
     return res.data;
   }

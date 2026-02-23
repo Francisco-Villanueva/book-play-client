@@ -1,12 +1,11 @@
 import { Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import { AuthProvider } from "@/context/auth.context";
 import { LoginPage } from "@/pages/auth/login/LoginPage";
 import { RegisterPage } from "@/pages/auth/register/RegisterPage";
 import { Toaster } from "@/components/ui/sonner";
-import { HomePage } from "./pages/home/HomePage";
 import { ProtectedRoute } from "./components/routes/ProtectedRoute";
+import { AdminPage } from "./pages/admin/AdminPage";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +16,7 @@ function AppRoutes() {
         path="/*"
         element={
           <ProtectedRoute>
-            <HomePage />
+            <AdminPage />
           </ProtectedRoute>
         }
       />

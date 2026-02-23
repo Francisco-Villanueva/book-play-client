@@ -14,6 +14,13 @@ const fetchCourt = async (courtId: string): Promise<TCourt> => {
   return CourtService.getCourtDetails(courtId);
 };
 
+export const useCourts = (businessId: string) => {
+  return useQuery({
+    queryKey: ["business", businessId, "courts"],
+    queryFn: () => fetchCourts(businessId),
+    enabled: !!businessId,
+  });
+};
 export const useCourtsByBusinessQuery = (businessId: string) => {
   return useQuery({
     queryKey: ["business", businessId, "courts"],
