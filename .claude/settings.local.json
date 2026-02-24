@@ -16,7 +16,8 @@
       "mcp__notion__notion-search",
       "Bash(cd \"C:\\\\Users\\\\franc\\\\OneDrive\\\\Desktop\\\\book-and-play-client\" && pnpm tsc -b --noEmit 2>&1)",
       "WebFetch(domain:localhost)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(cd \"C:/Users/franc/OneDrive/Desktop/book-and-play-client\" && pnpm build 2>&1)"
     ]
   }
 }
