@@ -7,7 +7,7 @@ import type {
 
 export class BusinessUserService {
   static async getBusinessUsers(businessId: string): Promise<TBusinessUser[]> {
-    const res = await axiosInstance.get(`/businesses/${businessId}/users`);
+    const res = await axiosInstance.get(`/businesses/${businessId}/members`);
     return res.data;
   }
 
@@ -15,7 +15,10 @@ export class BusinessUserService {
     businessId: string,
     data: TCreateBusinessUserInput,
   ): Promise<TBusinessUser> {
-    const res = await axiosInstance.post(`/businesses/${businessId}/users`, data);
+    const res = await axiosInstance.post(
+      `/businesses/${businessId}/members`,
+      data,
+    );
     return res.data;
   }
 
@@ -24,11 +27,17 @@ export class BusinessUserService {
     userId: string,
     data: TUpdateBusinessUserInput,
   ): Promise<TBusinessUser> {
-    const res = await axiosInstance.patch(`/businesses/${businessId}/users/${userId}`, data);
+    const res = await axiosInstance.patch(
+      `/businesses/${businessId}/members/${userId}`,
+      data,
+    );
     return res.data;
   }
 
-  static async removeBusinessUser(businessId: string, userId: string): Promise<void> {
-    await axiosInstance.delete(`/businesses/${businessId}/users/${userId}`);
+  static async removeBusinessUser(
+    businessId: string,
+    userId: string,
+  ): Promise<void> {
+    await axiosInstance.delete(`/businesses/${businessId}/members/${userId}`);
   }
 }

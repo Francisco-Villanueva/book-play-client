@@ -9,6 +9,7 @@ import { NewAccountRoute } from "./components/routes/NewAccountRoute";
 import { AdminPage } from "./pages/admin/AdminPage";
 import { CreateBusinessPage } from "./pages/admin/business/components/create/CreateBusinessPage";
 import { Navbar } from "./components/common/Navbar";
+import { PublicBookingPage } from "./pages/public/PublicBookingPage";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route
-        path="/*"
+        path="/admin/*"
         element={
           <ProtectedRoute>
             <RequiresBusinessRoute>
@@ -25,6 +26,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route path="/" element={<PublicBookingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route

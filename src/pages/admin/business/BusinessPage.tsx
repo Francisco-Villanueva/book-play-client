@@ -100,7 +100,7 @@ export function BusinessPage() {
           <CardFooter>
             <Button
               className="gap-2"
-              onClick={() => navigate("/businesses/new")}
+              onClick={() => navigate("/admin/businesses/new")}
             >
               <Plus className="h-4 w-4" />
               Crear negocio
@@ -111,7 +111,7 @@ export function BusinessPage() {
     );
   }
   if (businesses.length === 1) {
-    return <Navigate to={`/businesses/${businesses[0].id}`} />;
+    return <Navigate to={`/admin/businesses/${businesses[0].id}`} />;
   }
 
   return (
@@ -126,7 +126,7 @@ export function BusinessPage() {
             disponible{businesses.length === 1 ? "" : "s"} para administrar.
           </p>
         </div>
-        <Button className="gap-2" onClick={() => navigate("/businesses/new")}>
+        <Button className="gap-2" onClick={() => navigate("/admin/businesses/new")}>
           <Plus className="h-4 w-4" />
           Nuevo negocio
         </Button>
@@ -137,7 +137,7 @@ export function BusinessPage() {
           <Card
             key={business.id}
             className="shadow-sm cursor-pointer hover:border-primary/40 transition-colors"
-            onClick={() => navigate(`/businesses/${business.id}`)}
+            onClick={() => navigate(`/admin/businesses/${business.id}`)}
           >
             <CardHeader className="pb-3">
               <CardTitle className="text-lg leading-tight">

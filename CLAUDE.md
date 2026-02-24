@@ -39,9 +39,23 @@ src/
 │   ├── auth/
 │   │   ├── login/LoginPage.tsx
 │   │   └── register/RegisterPage.tsx
-│   ├── business/
-│   │   └── create/CreateBusinessPage.tsx
-│   └── home/HomePage.tsx
+│   ├── public/
+│   │   └── PublicBookingPage.tsx                      # Ruta "/" — pública para jugadores (reservas)
+│   ├── auth/
+│   │   ├── login/LoginPage.tsx
+│   │   └── register/RegisterPage.tsx
+│   └── admin/
+│       ├── AdminPage.tsx                              # Shell: Navbar + nested <Routes>
+│       ├── home/HomePage.tsx                          # Dashboard (stats, próximas reservas, canchas)
+│       ├── bookings/BookingsPage.tsx                  # Panel de reservas (filtros + cancelar)
+│       └── business/
+│           ├── BusinessPage.tsx                       # Lista / redirect a detalle
+│           ├── detail/BusinessDetailPage.tsx
+│           └── components/
+│               ├── BusinessDetail.tsx
+│               ├── create/CreateBusinessPage.tsx      # (también en /new-account)
+│               ├── create/CreateCourtForm.tsx
+│               └── edit/EditCourtForm.tsx
 │
 ├── components/
 │   ├── auth-layout.tsx        # Two-panel layout for auth pages
@@ -77,9 +91,13 @@ src/
 │   └── auth.context.tsx       # AuthProvider + useAuth hook
 │
 ├── queries/                   # TanStack React Query hooks
-│   └── business/
-│       ├── get.ts             # useBusinessQuery()
-│       └── post.ts            # useCreateBusinessMutation()
+│   ├── business/
+│   │   ├── get.ts             # useBusinessQuery(), useBusinessDetailQuery()
+│   │   └── post.ts            # useCreateBusinessMutation()
+│   ├── court/
+│   │   └── get.ts             # useCourtsByBusinessQuery()
+│   └── booking/
+│       └── get.ts             # useBookingsByBusinessQuery()
 │
 ├── utils/
 │   └── api.ts                 # axiosInstance + setAuthInterceptor()
@@ -90,12 +108,27 @@ src/
 
 ### Routes (App.tsx)
 
-| Path | Component | Access |
-|------|-----------|--------|
-| `/` | `HomePage` | Public |
-| `/login` | `LoginPage` | Public (redirects to `/businesses/new` if authenticated) |
-| `/register` | `RegisterPage` | Public (redirects to `/businesses/new` if authenticated) |
-| `/businesses/new` | `CreateBusinessPage` | Protected (ProtectedRoute → `/login`) |
+| Path                              | Component              | Access                                                                        |
+| --------------------------------- | ---------------------- | ----------------------------------------------------------------------------- |
+| `/`                               | `PublicBookingPage`    | **Público** — reservas para jugadores                                         |
+| `/login`                          | `LoginPage`            | Público (redirect → `/admin` si autenticado)                                  |
+| `/register`                       | `RegisterPage`         | Público (redirect → `/new-account` si autenticado)                            |
+| `/new-account`                    | `CreateBusinessPage`   | Protegido (ProtectedRoute → `/login`, NewAccountRoute → `/admin`)             |
+| `/admin/*`                        | `AdminPage`            | Protegido (ProtectedRoute → `/login`, RequiresBusinessRoute → `/new-account`) |
+
+#### Admin sub-routes (nested `<Routes>` en `AdminPage`, definidas en `src/routes/home.routes.tsx`)
+
+`TRoute` tiene dos campos de path:
+- `path` — absoluto, usado en `<Link to={route.path}>` en el Navbar
+- `relativePath` — relativo al prefijo `/admin`, usado en `<Route path={route.relativePath}>` dentro del nested `<Routes>`
+
+| `path` (absoluto)                 | `relativePath`            | Component              | Navbar |
+| --------------------------------- | ------------------------- | ---------------------- | ------ |
+| `/admin`                          | `/`                       | `HomePage`             | ✓      |
+| `/admin/bookings`                 | `/bookings`               | `BookingsPage`         | ✓      |
+| `/admin/businesses`               | `/businesses`             | `BusinessPage`         | ✓      |
+| `/admin/businesses/new`           | `/businesses/new`         | `CreateBusinessPage`   | —      |
+| `/admin/businesses/:businessId`   | `/businesses/:businessId` | `BusinessDetailPage`   | —      |
 
 ### API Layer
 
@@ -103,6 +136,10 @@ src/
 - `axiosInstance` in `utils/api.ts` is the shared HTTP client — all services use it
 - Auth uses Bearer token via request interceptor (`setAuthInterceptor`)
 - Services are static classes (e.g., `AuthService.login()`, `BusinessService.createBusiness()`)
+
+### API Endpoints documentation
+
+- path: `VITE_API_BASE_URL` env var + `/docs` (e.g. `http://localhost:3000/docs`)
 
 ### Auth
 

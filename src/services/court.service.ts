@@ -11,8 +11,13 @@ export class CourtService {
     return res.data;
   }
 
-  static async getCourtDetails(courtId: string): Promise<TCourt> {
-    const res = await axiosInstance.get(`/courts/${courtId}`);
+  static async getCourtDetails(
+    businessId: string,
+    courtId: string,
+  ): Promise<TCourt> {
+    const res = await axiosInstance.get(
+      `/businesses/${businessId}/courts/${courtId}`,
+    );
     return res.data;
   }
 
@@ -28,18 +33,18 @@ export class CourtService {
   }
 
   static async updateCourt(
-    courtId: string,
     businessId: string,
+    courtId: string,
     data: TUpdateCourtInput,
   ): Promise<TCourt> {
     const res = await axiosInstance.patch(
-      `businesses/${businessId}/courts/${courtId}`,
+      `/businesses/${businessId}/courts/${courtId}`,
       data,
     );
     return res.data;
   }
 
-  static async deleteCourt(courtId: string): Promise<void> {
-    await axiosInstance.delete(`/courts/${courtId}`);
+  static async deleteCourt(businessId: string, courtId: string): Promise<void> {
+    await axiosInstance.delete(`/businesses/${businessId}/courts/${courtId}`);
   }
 }

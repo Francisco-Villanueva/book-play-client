@@ -4,6 +4,6 @@ import { Navigate } from "react-router";
 
 export function NewAccountRoute({ children }: { children: ReactNode }) {
   const { hasBusiness } = useAuth();
-  if (hasBusiness) return <Navigate to="/" replace />;
+  if (hasBusiness) return <Navigate to="/admin" replace />;
   return <>{children}</>;
 }

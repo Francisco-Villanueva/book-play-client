@@ -46,14 +46,14 @@ export function RegisterPage() {
     onSuccess: (data) => {
       sileo.success({ title: "¡Cuenta creada!", description: "Bienvenido a Book & Play" });
       login(data.accessToken);
-      navigate("/businesses/new");
+      navigate("/new-account");
     },
     onError: (error) => {
       sileo.error({ title: (error as Error).message || "Error al crear la cuenta. Intentá de nuevo." });
     },
   });
 
-  if (isAuthenticated) return <Navigate to="/businesses/new" replace />;
+  if (isAuthenticated) return <Navigate to="/new-account" replace />;
 
   return (
     <AuthLayout>

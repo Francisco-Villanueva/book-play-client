@@ -37,7 +37,7 @@ export function LoginPage() {
       sileo.success({ title: "¡Bienvenido de vuelta!" });
       login(data.accessToken);
 
-      location.replace("/");
+      location.replace("/admin");
     },
   });
 
@@ -45,7 +45,7 @@ export function LoginPage() {
     mutation.mutate(data);
   };
 
-  if (isAuthenticated) return <Navigate to="/" replace />;
+  if (isAuthenticated) return <Navigate to="/admin" replace />;
 
   return (
     <AuthLayout>

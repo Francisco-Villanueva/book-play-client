@@ -9,9 +9,12 @@ const fetchCourts = async (businessId: string): Promise<TCourt[]> => {
   return CourtService.getCourts(businessId);
 };
 
-const fetchCourt = async (courtId: string): Promise<TCourt> => {
+const fetchCourt = async (
+  businessId: string,
+  courtId: string,
+): Promise<TCourt> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return CourtService.getCourtDetails(courtId);
+  return CourtService.getCourtDetails(businessId, courtId);
 };
 
 export const useCourts = (businessId: string) => {
@@ -21,6 +24,7 @@ export const useCourts = (businessId: string) => {
     enabled: !!businessId,
   });
 };
+
 export const useCourtsByBusinessQuery = (businessId: string) => {
   return useQuery({
     queryKey: ["business", businessId, "courts"],
@@ -29,10 +33,10 @@ export const useCourtsByBusinessQuery = (businessId: string) => {
   });
 };
 
-export const useCourtQuery = (courtId: string) => {
+export const useCourtQuery = (businessId: string, courtId: string) => {
   return useQuery({
-    queryKey: ["court", courtId],
-    queryFn: () => fetchCourt(courtId),
-    enabled: !!courtId,
+    queryKey: ["business", businessId, "court", courtId],
+    queryFn: () => fetchCourt(businessId, courtId),
+    enabled: !!businessId && !!courtId,
   });
 };

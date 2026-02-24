@@ -11,7 +11,8 @@
       "Bash(cd \"C:\\\\Users\\\\franc\\\\OneDrive\\\\Desktop\\\\book-and-play-client\" && npx vercel --version 2>&1)",
       "mcp__vercel__list_teams",
       "mcp__notion__notion-create-database",
-      "mcp__notion__notion-create-pages"
+      "mcp__notion__notion-create-pages",
+      "WebFetch(domain:book-play.onrender.com)"
     ]
   }
 }

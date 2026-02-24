@@ -1,29 +1,32 @@
 import { ACCESS_TOKEN_KEY } from "@/context/auth.context";
-import type { TBooking, TUpdateBookingInput } from "@/models/booking.model";
+import type { TBooking } from "@/models/booking.model";
 import { BookingService } from "@/services/booking.service";
 import { setAuthInterceptor } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const updateBooking = async ({
+const cancelBooking = async ({
+  businessId,
   bookingId,
-  data,
 }: {
+  businessId: string;
   bookingId: string;
-  data: TUpdateBookingInput;
 }): Promise<TBooking> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return BookingService.updateBooking(bookingId, data);
+  return BookingService.cancelBooking(businessId, bookingId);
 };
 
-export const useUpdateBookingMutation = () => {
+export const useCancelBookingMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: updateBooking,
+    mutationFn: cancelBooking,
     mutationKey: ["booking"],
     onSuccess: (data, { bookingId }) => {
-      queryClient.invalidateQueries({ queryKey: ["booking", bookingId] });
-      queryClient.invalidateQueries({ queryKey: ["business", data.businessId, "bookings"] });
-      queryClient.invalidateQueries({ queryKey: ["court", data.courtId, "bookings"] });
+      queryClient.invalidateQueries({
+        queryKey: ["business", data.businessId, "booking", bookingId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["business", data.businessId, "bookings"],
+      });
     },
   });
 };

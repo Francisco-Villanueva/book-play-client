@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth.context";
-import { homeRoutes } from "@/routes/home.routes";
+import { adminRoutes } from "@/routes/home.routes";
 import { LogOut } from "lucide-react";
 import { sileo } from "sileo";
 
@@ -45,12 +45,13 @@ export function Navbar({ showRoutes = true }: { showRoutes?: boolean }) {
         </div>
         {showRoutes ? (
           <nav className="flex">
-            {homeRoutes.map((route) =>
+            {adminRoutes.map((route) =>
               route.vissibleNavbar ? (
                 <Link
                   key={route.path}
                   to={route.path}
                   className="text-muted-foreground hover:text-foreground flex items-center gap-1.5"
+                  replace
                 >
                   <Button
                     key={route.path}

@@ -14,7 +14,7 @@ const updateCourt = async ({
   data: TUpdateCourtInput;
 }): Promise<TCourt> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return CourtService.updateCourt(courtId, businessId, data);
+  return CourtService.updateCourt(businessId, courtId, data);
 };
 
 export const useUpdateCourtMutation = () => {
@@ -23,7 +23,9 @@ export const useUpdateCourtMutation = () => {
     mutationFn: updateCourt,
     mutationKey: ["court"],
     onSuccess: (_, { courtId, businessId }) => {
-      queryClient.invalidateQueries({ queryKey: ["court", courtId] });
+      queryClient.invalidateQueries({
+        queryKey: ["business", businessId, "court", courtId],
+      });
       queryClient.invalidateQueries({
         queryKey: ["business", businessId, "courts"],
       });

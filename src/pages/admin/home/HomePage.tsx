@@ -267,7 +267,7 @@ function Dashboard({
             variant="ghost"
             size="sm"
             className="gap-1 text-xs h-8 px-2"
-            onClick={() => navigate(`/businesses/${businessId}`)}
+            onClick={() => navigate(`/admin/businesses/${businessId}`)}
           >
             Ver todo
             <ChevronRight className="h-3.5 w-3.5" />
@@ -327,7 +327,7 @@ function Dashboard({
             variant="ghost"
             size="sm"
             className="gap-1 text-xs h-8 px-2"
-            onClick={() => navigate(`/businesses/${businessId}`)}
+            onClick={() => navigate(`/admin/businesses/${businessId}`)}
           >
             Administrar
             <ChevronRight className="h-3.5 w-3.5" />
@@ -367,7 +367,7 @@ function Dashboard({
                 variant="outline"
                 size="sm"
                 className="gap-2 h-8 text-xs"
-                onClick={() => navigate(`/businesses/${businessId}`)}
+                onClick={() => navigate(`/admin/businesses/${businessId}`)}
               >
                 <Plus className="h-3.5 w-3.5" />
                 Agregar cancha

@@ -3,9 +3,15 @@ import { CourtService } from "@/services/court.service";
 import { setAuthInterceptor } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const deleteCourt = async ({ courtId }: { courtId: string }): Promise<void> => {
+const deleteCourt = async ({
+  businessId,
+  courtId,
+}: {
+  businessId: string;
+  courtId: string;
+}): Promise<void> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  await CourtService.deleteCourt(courtId);
+  await CourtService.deleteCourt(businessId, courtId);
 };
 
 export const useDeleteCourtMutation = () => {
@@ -13,8 +19,13 @@ export const useDeleteCourtMutation = () => {
   return useMutation({
     mutationFn: deleteCourt,
     mutationKey: ["court"],
-    onSuccess: (_, { courtId }) => {
-      queryClient.invalidateQueries({ queryKey: ["court", courtId] });
+    onSuccess: (_, { businessId, courtId }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["business", businessId, "court", courtId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["business", businessId, "courts"],
+      });
     },
   });
 };
