@@ -6,6 +6,8 @@ import { RegisterPage } from "@/pages/auth/register/RegisterPage";
 import { Toaster } from "@/components/ui/sonner";
 import { ProtectedRoute } from "./components/routes/ProtectedRoute";
 import { AdminPage } from "./pages/admin/AdminPage";
+import { CreateBusinessPage } from "./pages/admin/business/components/create/CreateBusinessPage";
+import { Navbar } from "./components/common/Navbar";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,15 @@ function AppRoutes() {
       />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/new-account"
+        element={
+          <ProtectedRoute>
+            <Navbar showRoutes={false} />
+            <CreateBusinessPage />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

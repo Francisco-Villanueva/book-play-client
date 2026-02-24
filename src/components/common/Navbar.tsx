@@ -5,7 +5,7 @@ import { LogOut } from "lucide-react";
 
 import { Link, useNavigate } from "react-router";
 
-export function Navbar() {
+export function Navbar({ showRoutes = true }: { showRoutes?: boolean }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -41,27 +41,29 @@ export function Navbar() {
             Book & Play
           </span>
         </div>
-        <nav className="flex">
-          {homeRoutes.map((route) =>
-            route.vissibleNavbar ? (
-              <Link
-                key={route.path}
-                to={route.path}
-                className="text-muted-foreground hover:text-foreground flex items-center gap-1.5"
-              >
-                <Button
+        {showRoutes ? (
+          <nav className="flex">
+            {homeRoutes.map((route) =>
+              route.vissibleNavbar ? (
+                <Link
                   key={route.path}
-                  variant="ghost"
-                  size="sm"
-                  className="text-muted-foreground hover:text-foreground"
+                  to={route.path}
+                  className="text-muted-foreground hover:text-foreground flex items-center gap-1.5"
                 >
-                  {route.icon}
-                  <span className="ml-2">{route.label}</span>
-                </Button>
-              </Link>
-            ) : null,
-          )}
-        </nav>
+                  <Button
+                    key={route.path}
+                    variant="ghost"
+                    size="sm"
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    {route.icon}
+                    <span className="ml-2">{route.label}</span>
+                  </Button>
+                </Link>
+              ) : null,
+            )}
+          </nav>
+        ) : null}
 
         <Button
           variant="ghost"

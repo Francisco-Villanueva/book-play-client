@@ -7,7 +7,7 @@ export function AdminPage() {
   const businessQuery = useBusinessQuery();
 
   if (businessQuery.data && businessQuery.data.length === 0)
-    return <Navigate to={"/businesses/new"} replace />;
+    return <Navigate to={"/new-account"} replace />;
   return (
     <div>
       <Navbar />
