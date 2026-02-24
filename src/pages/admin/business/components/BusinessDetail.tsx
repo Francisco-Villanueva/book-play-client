@@ -8,6 +8,7 @@ import {
   Clock3,
   Mail,
   MapPin,
+  Pencil,
   Phone,
   Plus,
   RefreshCw,
@@ -15,6 +16,7 @@ import {
 
 import { useBusinessDetailQuery } from "@/queries/business/get";
 import { useCourtsByBusinessQuery } from "@/queries/court/get";
+import type { TCourt } from "@/models/court.model";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,12 +30,15 @@ import {
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import { CreateCourtForm } from "./create/CreateCourtForm";
+import { EditCourtForm } from "./edit/EditCourtForm";
+
 interface BusinessDetailProps {
   businessId: string;
 }
 export function BusinessDetail({ businessId }: BusinessDetailProps) {
   const navigate = useNavigate();
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingCourt, setEditingCourt] = useState<TCourt | null>(null);
 
   const businessQuery = useBusinessDetailQuery(businessId!);
   const courtsQuery = useCourtsByBusinessQuery(businessId!);
@@ -161,11 +166,27 @@ export function BusinessDetail({ businessId }: BusinessDetailProps) {
         </div>
 
         <Dialog open={showCreateForm} onOpenChange={setShowCreateForm}>
-          <DialogContent className="p-0 sm:max-w-2xl" showCloseButton={false}>
+          <DialogContent className="p-0 sm:max-w-4xl" showCloseButton={false}>
             <CreateCourtForm
               businessId={businessId!}
               onClose={() => setShowCreateForm(false)}
             />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={!!editingCourt}
+          onOpenChange={(open) => {
+            if (!open) setEditingCourt(null);
+          }}
+        >
+          <DialogContent className="p-0 sm:max-w-4xl" showCloseButton={false}>
+            {editingCourt && (
+              <EditCourtForm
+                court={editingCourt}
+                onClose={() => setEditingCourt(null)}
+              />
+            )}
           </DialogContent>
         </Dialog>
 
@@ -210,12 +231,24 @@ export function BusinessDetail({ businessId }: BusinessDetailProps) {
             {courts.map((court) => (
               <Card key={court.id} className="shadow-sm">
                 <CardHeader className="pb-2 pt-5 px-5">
-                  <CardTitle className="text-base font-semibold">
-                    {court.name}
-                  </CardTitle>
-                  {court.sportType && (
-                    <CardDescription>{court.sportType}</CardDescription>
-                  )}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <CardTitle className="text-base font-semibold">
+                        {court.name}
+                      </CardTitle>
+                      {court.sportType && (
+                        <CardDescription>{court.sportType}</CardDescription>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="shrink-0 -mt-1 -mr-1 h-8 w-8 text-muted-foreground hover:text-foreground"
+                      onClick={() => setEditingCourt(court)}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="px-5 pb-5 space-y-2">
                   {court.surface && (

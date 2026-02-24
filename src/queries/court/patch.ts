@@ -6,13 +6,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const updateCourt = async ({
   courtId,
+  businessId,
   data,
 }: {
   courtId: string;
+  businessId: string;
   data: TUpdateCourtInput;
 }): Promise<TCourt> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return CourtService.updateCourt(courtId, data);
+  return CourtService.updateCourt(courtId, businessId, data);
 };
 
 export const useUpdateCourtMutation = () => {
@@ -20,8 +22,11 @@ export const useUpdateCourtMutation = () => {
   return useMutation({
     mutationFn: updateCourt,
     mutationKey: ["court"],
-    onSuccess: (_, { courtId }) => {
+    onSuccess: (_, { courtId, businessId }) => {
       queryClient.invalidateQueries({ queryKey: ["court", courtId] });
+      queryClient.invalidateQueries({
+        queryKey: ["business", businessId, "courts"],
+      });
     },
   });
 };

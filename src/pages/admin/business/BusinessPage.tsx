@@ -58,7 +58,7 @@ export function BusinessPage() {
 
   if (businessQuery.isError) {
     return (
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <Card className="border-destructive/25 bg-destructive/5 shadow-sm">
           <CardHeader>
             <CardTitle className="text-destructive">
@@ -85,7 +85,7 @@ export function BusinessPage() {
 
   if (businesses.length === 0) {
     return (
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <Card className="shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

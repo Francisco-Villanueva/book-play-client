@@ -8,6 +8,7 @@ import {
 } from "react";
 import { setAuthInterceptor } from "@/utils/api";
 import { AuthService } from "@/services/auth.service";
+import { BusinessService } from "@/services/business.service";
 import type { TUser } from "@/models/user.model";
 
 export const ACCESS_TOKEN_KEY = "access_token";
@@ -20,6 +21,8 @@ interface AuthContextType {
   refreshUser: () => Promise<void>;
   isAuthenticated: boolean;
   isLoadingUser: boolean;
+  hasBusiness: boolean | null;
+  markHasBusiness: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -30,6 +33,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
   const [user, setUser] = useState<TUser | null>(null);
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(() => !!token);
+  const [hasBusiness, setHasBusiness] = useState<boolean | null>(() =>
+    localStorage.getItem(ACCESS_TOKEN_KEY) ? null : false,
+  );
 
   useEffect(() => {
     setAuthInterceptor(token);
@@ -44,20 +50,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     setToken(null);
     setUser(null);
+    setHasBusiness(false);
     setIsLoadingUser(false);
+  }, []);
+
+  const markHasBusiness = useCallback(() => {
+    setHasBusiness(true);
   }, []);
 
   const refreshUser = useCallback(async () => {
     if (!token) {
       setUser(null);
+      setHasBusiness(false);
       setIsLoadingUser(false);
       return;
     }
 
     setIsLoadingUser(true);
     try {
-      const me = await AuthService.me();
+      const [me, businesses] = await Promise.all([
+        AuthService.me(),
+        BusinessService.getBusinesses(),
+      ]);
       setUser(me);
+      setHasBusiness(businesses.length > 0);
     } catch {
       logout();
     } finally {
@@ -79,6 +95,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshUser,
         isAuthenticated: !!token,
         isLoadingUser,
+        hasBusiness,
+        markHasBusiness,
       }}
     >
       {children}

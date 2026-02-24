@@ -29,9 +29,13 @@ export class CourtService {
 
   static async updateCourt(
     courtId: string,
+    businessId: string,
     data: TUpdateCourtInput,
   ): Promise<TCourt> {
-    const res = await axiosInstance.patch(`/courts/${courtId}`, data);
+    const res = await axiosInstance.patch(
+      `businesses/${businessId}/courts/${courtId}`,
+      data,
+    );
     return res.data;
   }
 

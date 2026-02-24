@@ -3,8 +3,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/context/auth.context";
 import { LoginPage } from "@/pages/auth/login/LoginPage";
 import { RegisterPage } from "@/pages/auth/register/RegisterPage";
-import { Toaster } from "@/components/ui/sonner";
 import { ProtectedRoute } from "./components/routes/ProtectedRoute";
+import { RequiresBusinessRoute } from "./components/routes/RequiresBusinessRoute";
+import { NewAccountRoute } from "./components/routes/NewAccountRoute";
 import { AdminPage } from "./pages/admin/AdminPage";
 import { CreateBusinessPage } from "./pages/admin/business/components/create/CreateBusinessPage";
 import { Navbar } from "./components/common/Navbar";
@@ -18,7 +19,9 @@ function AppRoutes() {
         path="/*"
         element={
           <ProtectedRoute>
-            <AdminPage />
+            <RequiresBusinessRoute>
+              <AdminPage />
+            </RequiresBusinessRoute>
           </ProtectedRoute>
         }
       />
@@ -28,8 +31,10 @@ function AppRoutes() {
         path="/new-account"
         element={
           <ProtectedRoute>
-            <Navbar showRoutes={false} />
-            <CreateBusinessPage />
+            <NewAccountRoute>
+              <Navbar showRoutes={false} />
+              <CreateBusinessPage />
+            </NewAccountRoute>
           </ProtectedRoute>
         }
       />
@@ -42,7 +47,6 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AppRoutes />
-        <Toaster />
       </AuthProvider>
     </QueryClientProvider>
   );

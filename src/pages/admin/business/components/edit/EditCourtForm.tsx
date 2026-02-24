@@ -4,8 +4,8 @@ import z from "zod";
 import { Loader2, X } from "lucide-react";
 import { sileo } from "sileo";
 
-import { useCreateCourtMutation } from "@/queries/court/post";
-import type { TCreateCourtInput } from "@/models/court.model";
+import { useUpdateCourtMutation } from "@/queries/court/patch";
+import type { TCourt, TUpdateCourtInput } from "@/models/court.model";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,8 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// ── Court form schema (plain string fields, booleans converted on submit) ─────
-const courtFormSchema = z.object({
+const editCourtFormSchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
   sportType: z.string(),
   surface: z.string(),
@@ -45,54 +44,52 @@ const courtFormSchema = z.object({
   description: z.string(),
 });
 
-type TCourtForm = z.infer<typeof courtFormSchema>;
-export function CreateCourtForm({
-  businessId,
+type TEditCourtForm = z.infer<typeof editCourtFormSchema>;
+
+export function EditCourtForm({
+  court,
   onClose,
 }: {
-  businessId: string;
+  court: TCourt;
   onClose: () => void;
 }) {
-  const form = useForm<TCourtForm>({
-    resolver: zodResolver(courtFormSchema),
+  const form = useForm<TEditCourtForm>({
+    resolver: zodResolver(editCourtFormSchema),
     defaultValues: {
-      name: "",
-      sportType: "",
-      surface: "",
-      capacity: "",
-      isIndoor: "",
-      hasLighting: "",
-      pricePerHour: "",
-      description: "",
+      name: court.name,
+      sportType: court.sportType ?? "",
+      surface: court.surface ?? "",
+      capacity: court.capacity !== undefined ? String(court.capacity) : "",
+      isIndoor: String(court.isIndoor),
+      hasLighting: String(court.hasLighting),
+      pricePerHour: court.pricePerHour !== undefined ? String(court.pricePerHour) : "",
+      description: court.description ?? "",
     },
   });
 
-  const createCourt = useCreateCourtMutation();
+  const updateCourt = useUpdateCourtMutation();
 
-  function handleSubmit(data: TCourtForm) {
-    const payload: TCreateCourtInput = {
+  function handleSubmit(data: TEditCourtForm) {
+    const payload: TUpdateCourtInput = {
       name: data.name,
       sportType: data.sportType || undefined,
       surface: data.surface || undefined,
       capacity: data.capacity ? parseInt(data.capacity) : undefined,
       isIndoor: data.isIndoor === "true",
       hasLighting: data.hasLighting === "true",
-      pricePerHour: data.pricePerHour
-        ? parseFloat(data.pricePerHour)
-        : undefined,
+      pricePerHour: data.pricePerHour ? parseFloat(data.pricePerHour) : undefined,
       description: data.description || undefined,
     };
 
-    createCourt.mutate(
-      { businessId, data: payload },
+    updateCourt.mutate(
+      { courtId: court.id, businessId: court.businessId, data: payload },
       {
         onSuccess: () => {
-          sileo.success({ title: "Cancha creada exitosamente" });
-          form.reset();
+          sileo.success({ title: "Cancha actualizada exitosamente" });
           onClose();
         },
         onError: () => {
-          sileo.error({ title: "Error al crear la cancha. Intentá de nuevo." });
+          sileo.error({ title: "Error al actualizar la cancha. Intentá de nuevo." });
         },
       },
     );
@@ -104,10 +101,10 @@ export function CreateCourtForm({
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-base font-semibold">
-              Nueva cancha
+              Editar cancha
             </CardTitle>
             <CardDescription className="mt-0.5">
-              Completá los datos de la cancha
+              Modificá los datos de {court.name}
             </CardDescription>
           </div>
           <Button
@@ -157,11 +154,7 @@ export function CreateCourtForm({
                       </span>
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Fútbol 5"
-                        className="h-10"
-                        {...field}
-                      />
+                      <Input placeholder="Fútbol 5" className="h-10" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -318,31 +311,22 @@ export function CreateCourtForm({
               )}
             />
 
-            {createCourt.error && (
-              <div className="rounded-lg bg-destructive/8 border border-destructive/20 px-4 py-3">
-                <p className="text-sm text-destructive font-medium text-center">
-                  {(createCourt.error as Error).message ||
-                    "Error al crear la cancha. Intentá de nuevo."}
-                </p>
-              </div>
-            )}
-
             <div className="flex gap-2 justify-end pt-1">
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancelar
               </Button>
               <Button
                 type="submit"
-                disabled={createCourt.isPending}
+                disabled={updateCourt.isPending}
                 className="gap-2"
               >
-                {createCourt.isPending ? (
+                {updateCourt.isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Guardando...
                   </>
                 ) : (
-                  "Guardar cancha"
+                  "Guardar cambios"
                 )}
               </Button>
             </div>

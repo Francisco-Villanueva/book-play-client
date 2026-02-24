@@ -1,17 +1,9 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowRight,
-  Loader2,
-  CheckCircle2,
-  Zap,
-  Calendar,
-  Users,
-} from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import z from "zod";
 
-import type { TBusiness, TCreateBusinessInput } from "@/models/business.model";
+import type { TCreateBusinessInput } from "@/models/business.model";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,6 +31,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCreateBusinessMutation } from "@/queries/business/post";
+import { useAuth } from "@/context/auth.context";
+import { sileo } from "sileo";
 
 const formSchema = z.object({
   name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
@@ -82,8 +76,6 @@ const SLOT_DURATIONS = [
   { value: "120", label: "120 min — 2 horas" },
 ];
 
-type CreatedBusiness = { id: string; name: string; createdAt: string };
-
 // ── Section heading with numbered badge ──────────────────────────────────────
 function SectionBadge({
   number,
@@ -113,85 +105,9 @@ function SectionBadge({
   );
 }
 
-// ── Success screen ────────────────────────────────────────────────────────────
-function SuccessScreen({ business }: { business: CreatedBusiness }) {
-  const NEXT_STEPS = [
-    { icon: Zap, text: "Agregá tus canchas y sus características" },
-    { icon: Calendar, text: "Configurá disponibilidad y horarios" },
-    { icon: Users, text: "Compartí el link de reservas con tus jugadores" },
-  ];
-
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
-        {/* Hero card */}
-        <div
-          className="rounded-2xl p-8 text-center mb-4"
-          style={{
-            background:
-              "linear-gradient(135deg, oklch(0.60 0.20 146) 0%, oklch(0.45 0.18 152) 100%)",
-          }}
-        >
-          <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-9 h-9 text-white" />
-          </div>
-          <h1 className="text-2xl font-extrabold text-white mb-1">
-            ¡Negocio creado!
-          </h1>
-          <p className="text-emerald-100/80 text-sm">
-            <span className="font-semibold text-white">{business.name}</span> ya
-            está registrado en Book &amp; Play
-          </p>
-        </div>
-
-        {/* Details card */}
-        <Card className="mb-4 shadow-sm">
-          <CardContent className="pt-5 pb-5 space-y-3">
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
-                Nombre del negocio
-              </p>
-              <p className="font-semibold text-foreground">{business.name}</p>
-            </div>
-            <div className="h-px bg-border" />
-            <div>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
-                ID del negocio
-              </p>
-              <p className="font-mono text-xs text-muted-foreground break-all bg-muted rounded-md px-3 py-2">
-                {business.id}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Next steps */}
-        <Card className="shadow-sm">
-          <CardHeader className="pb-3 pt-5">
-            <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-              Próximos pasos
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0 pb-5 space-y-3">
-            {NEXT_STEPS.map(({ icon: Icon, text }, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center shrink-0">
-                  <Icon className="w-4 h-4 text-primary" />
-                </div>
-                <p className="text-sm text-foreground/80">{text}</p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-}
-
 // ── Main page ─────────────────────────────────────────────────────────────────
 export function CreateBusinessPage() {
-  const [createdBusiness, setCreatedBusiness] =
-    useState<CreatedBusiness | null>(null);
+  const { markHasBusiness } = useAuth();
 
   const form = useForm<TBusinessForm>({
     resolver: zodResolver(formSchema),
@@ -218,18 +134,17 @@ export function CreateBusinessPage() {
       slotDuration: Number(data.slotDuration) as 30 | 60 | 90 | 120,
     };
     createBusinessMutation.mutate(payload, {
-      onSuccess(data) {
-        setCreatedBusiness(data as TBusiness);
+      onSuccess() {
+        sileo.success({ title: "¡Negocio creado exitosamente!" });
+        markHasBusiness();
       },
     });
   };
 
-  if (createdBusiness) return <SuccessScreen business={createdBusiness} />;
-
   return (
     <div className="min-h-screen bg-background">
       {/* ── Content ── */}
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-8 space-y-5">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-5">
         {/* Page title */}
         <div className="pb-2">
           <h1 className="text-2xl font-extrabold tracking-tight text-foreground">

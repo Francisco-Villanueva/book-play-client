@@ -12,6 +12,7 @@ import {
 import { AuthService } from "@/services/auth.service";
 import { useAuth } from "@/context/auth.context";
 import { AuthLayout } from "@/components/auth-layout";
+import { sileo } from "sileo";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,8 +44,12 @@ export function RegisterPage() {
   const mutation = useMutation({
     mutationFn: AuthService.register,
     onSuccess: (data) => {
+      sileo.success({ title: "¡Cuenta creada!", description: "Bienvenido a Book & Play" });
       login(data.accessToken);
       navigate("/businesses/new");
+    },
+    onError: (error) => {
+      sileo.error({ title: (error as Error).message || "Error al crear la cuenta. Intentá de nuevo." });
     },
   });
 
