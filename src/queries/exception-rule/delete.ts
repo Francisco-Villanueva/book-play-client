@@ -4,12 +4,14 @@ import { setAuthInterceptor } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const deleteExceptionRule = async ({
+  businessId,
   ruleId,
 }: {
+  businessId: string;
   ruleId: string;
 }): Promise<void> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  await ExceptionRuleService.deleteExceptionRule(ruleId);
+  await ExceptionRuleService.deleteExceptionRule(businessId, ruleId);
 };
 
 export const useDeleteExceptionRuleMutation = () => {
@@ -17,7 +19,8 @@ export const useDeleteExceptionRuleMutation = () => {
   return useMutation({
     mutationFn: deleteExceptionRule,
     mutationKey: ["exception-rule"],
-    onSuccess: (_, { ruleId }) => {
+    onSuccess: (_, { businessId, ruleId }) => {
+      queryClient.invalidateQueries({ queryKey: ["business", businessId, "exception-rules"] });
       queryClient.invalidateQueries({ queryKey: ["exception-rule", ruleId] });
     },
   });

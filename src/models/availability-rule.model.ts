@@ -1,4 +1,4 @@
-import z from 'zod';
+import z from "zod";
 
 export const AvailabilityRuleSchema = z.object({
   id: z.string().uuid(),
@@ -17,11 +17,15 @@ export const CreateAvailabilityRuleSchema = z.object({
   dayOfWeek: z.number().int().min(0).max(6),
   startTime: z.string(),
   endTime: z.string(),
-  isActive: z.boolean(),
 });
 
-export const UpdateAvailabilityRuleSchema = CreateAvailabilityRuleSchema.partial();
+export const UpdateAvailabilityRuleSchema =
+  CreateAvailabilityRuleSchema.partial();
 
 export type TAvailabilityRule = z.infer<typeof AvailabilityRuleSchema>;
-export type TCreateAvailabilityRuleInput = z.infer<typeof CreateAvailabilityRuleSchema>;
-export type TUpdateAvailabilityRuleInput = z.infer<typeof UpdateAvailabilityRuleSchema>;
+export type TCreateAvailabilityRuleInput = z.infer<
+  typeof CreateAvailabilityRuleSchema
+>;
+export type TUpdateAvailabilityRuleInput = z.infer<
+  typeof UpdateAvailabilityRuleSchema
+>;

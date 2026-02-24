@@ -9,9 +9,12 @@ const fetchExceptionRules = async (businessId: string): Promise<TExceptionRule[]
   return ExceptionRuleService.getExceptionRules(businessId);
 };
 
-const fetchExceptionRule = async (ruleId: string): Promise<TExceptionRule> => {
+const fetchExceptionRule = async (
+  businessId: string,
+  ruleId: string,
+): Promise<TExceptionRule> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return ExceptionRuleService.getExceptionRuleDetails(ruleId);
+  return ExceptionRuleService.getExceptionRuleDetails(businessId, ruleId);
 };
 
 export const useExceptionRulesByBusinessQuery = (businessId: string) => {
@@ -22,10 +25,10 @@ export const useExceptionRulesByBusinessQuery = (businessId: string) => {
   });
 };
 
-export const useExceptionRuleQuery = (ruleId: string) => {
+export const useExceptionRuleQuery = (businessId: string, ruleId: string) => {
   return useQuery({
     queryKey: ["exception-rule", ruleId],
-    queryFn: () => fetchExceptionRule(ruleId),
-    enabled: !!ruleId,
+    queryFn: () => fetchExceptionRule(businessId, ruleId),
+    enabled: !!businessId && !!ruleId,
   });
 };

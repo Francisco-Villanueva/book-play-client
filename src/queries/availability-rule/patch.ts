@@ -8,14 +8,16 @@ import { setAuthInterceptor } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const updateAvailabilityRule = async ({
+  businessId,
   ruleId,
   data,
 }: {
+  businessId: string;
   ruleId: string;
   data: TUpdateAvailabilityRuleInput;
 }): Promise<TAvailabilityRule> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return AvailabilityRuleService.updateAvailabilityRule(ruleId, data);
+  return AvailabilityRuleService.updateAvailabilityRule(businessId, ruleId, data);
 };
 
 export const useUpdateAvailabilityRuleMutation = () => {
@@ -23,13 +25,9 @@ export const useUpdateAvailabilityRuleMutation = () => {
   return useMutation({
     mutationFn: updateAvailabilityRule,
     mutationKey: ["availability-rule"],
-    onSuccess: (_, { ruleId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ["availability-rule", ruleId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["business", "availability-rules"],
-      });
+    onSuccess: (_, { businessId, ruleId }) => {
+      queryClient.invalidateQueries({ queryKey: ["availability-rule", ruleId] });
+      queryClient.invalidateQueries({ queryKey: ["business", businessId, "availability-rules"] });
     },
   });
 };

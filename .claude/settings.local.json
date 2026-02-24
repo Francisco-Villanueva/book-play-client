@@ -12,7 +12,11 @@
       "mcp__vercel__list_teams",
       "mcp__notion__notion-create-database",
       "mcp__notion__notion-create-pages",
-      "WebFetch(domain:book-play.onrender.com)"
+      "WebFetch(domain:book-play.onrender.com)",
+      "mcp__notion__notion-search",
+      "Bash(cd \"C:\\\\Users\\\\franc\\\\OneDrive\\\\Desktop\\\\book-and-play-client\" && pnpm tsc -b --noEmit 2>&1)",
+      "WebFetch(domain:localhost)",
+      "Bash(head:*)"
     ]
   }
 }

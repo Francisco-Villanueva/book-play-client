@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import {
   ArrowLeft,
   Building2,
+  Calendar,
   CalendarDays,
   Clock3,
   Mail,
@@ -31,6 +32,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import { CreateCourtForm } from "./create/CreateCourtForm";
 import { EditCourtForm } from "./edit/EditCourtForm";
+import { CourtAvailabilityDialog } from "./availability/CourtAvailabilityDialog";
 
 interface BusinessDetailProps {
   businessId: string;
@@ -39,6 +41,7 @@ export function BusinessDetail({ businessId }: BusinessDetailProps) {
   const navigate = useNavigate();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingCourt, setEditingCourt] = useState<TCourt | null>(null);
+  const [managingCourt, setManagingCourt] = useState<TCourt | null>(null);
 
   const businessQuery = useBusinessDetailQuery(businessId!);
   const courtsQuery = useCourtsByBusinessQuery(businessId!);
@@ -190,6 +193,14 @@ export function BusinessDetail({ businessId }: BusinessDetailProps) {
           </DialogContent>
         </Dialog>
 
+        <CourtAvailabilityDialog
+          courtId={managingCourt?.id ?? ""}
+          courtName={managingCourt?.name ?? ""}
+          businessId={businessId}
+          open={!!managingCourt}
+          onClose={() => setManagingCourt(null)}
+        />
+
         {/* Lista de canchas */}
         {courtsQuery.isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -240,14 +251,24 @@ export function BusinessDetail({ businessId }: BusinessDetailProps) {
                         <CardDescription>{court.sportType}</CardDescription>
                       )}
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="shrink-0 -mt-1 -mr-1 h-8 w-8 text-muted-foreground hover:text-foreground"
-                      onClick={() => setEditingCourt(court)}
-                    >
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
+                    <div className="flex items-center gap-0.5 -mt-1 -mr-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground"
+                        onClick={() => setManagingCourt(court)}
+                      >
+                        <Calendar className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground"
+                        onClick={() => setEditingCourt(court)}
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="px-5 pb-5 space-y-2">

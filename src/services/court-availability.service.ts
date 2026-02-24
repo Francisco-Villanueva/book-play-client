@@ -1,24 +1,35 @@
 import { axiosInstance } from "@/utils/api";
-import type {
-  TCourtAvailability,
-  TCreateCourtAvailabilityInput,
-} from "@/models/court-availability.model";
+import type { TAvailabilityRule } from "@/models/availability-rule.model";
 
 export class CourtAvailabilityService {
-  static async getCourtAvailability(courtId: string): Promise<TCourtAvailability[]> {
-    const res = await axiosInstance.get(`/courts/${courtId}/availability-rules`);
+  static async getCourtAvailability(
+    businessId: string,
+    courtId: string,
+  ): Promise<TAvailabilityRule[]> {
+    const res = await axiosInstance.get(
+      `/businesses/${businessId}/courts/${courtId}/availability-rules`,
+    );
     return res.data;
   }
 
   static async addCourtAvailability(
+    businessId: string,
     courtId: string,
-    data: TCreateCourtAvailabilityInput,
-  ): Promise<TCourtAvailability> {
-    const res = await axiosInstance.post(`/courts/${courtId}/availability-rules`, data);
-    return res.data;
+    data: { ruleId: string },
+  ): Promise<void> {
+    await axiosInstance.post(
+      `/businesses/${businessId}/courts/${courtId}/availability-rules`,
+      data,
+    );
   }
 
-  static async removeCourtAvailability(id: string): Promise<void> {
-    await axiosInstance.delete(`/court-availability/${id}`);
+  static async removeCourtAvailability(
+    businessId: string,
+    courtId: string,
+    ruleId: string,
+  ): Promise<void> {
+    await axiosInstance.delete(
+      `/businesses/${businessId}/courts/${courtId}/availability-rules/${ruleId}`,
+    );
   }
 }

@@ -9,9 +9,12 @@ const fetchAvailabilityRules = async (businessId: string): Promise<TAvailability
   return AvailabilityRuleService.getAvailabilityRules(businessId);
 };
 
-const fetchAvailabilityRule = async (ruleId: string): Promise<TAvailabilityRule> => {
+const fetchAvailabilityRule = async (
+  businessId: string,
+  ruleId: string,
+): Promise<TAvailabilityRule> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return AvailabilityRuleService.getAvailabilityRuleDetails(ruleId);
+  return AvailabilityRuleService.getAvailabilityRuleDetails(businessId, ruleId);
 };
 
 export const useAvailabilityRulesByBusinessQuery = (businessId: string) => {
@@ -22,10 +25,10 @@ export const useAvailabilityRulesByBusinessQuery = (businessId: string) => {
   });
 };
 
-export const useAvailabilityRuleQuery = (ruleId: string) => {
+export const useAvailabilityRuleQuery = (businessId: string, ruleId: string) => {
   return useQuery({
     queryKey: ["availability-rule", ruleId],
-    queryFn: () => fetchAvailabilityRule(ruleId),
-    enabled: !!ruleId,
+    queryFn: () => fetchAvailabilityRule(businessId, ruleId),
+    enabled: !!businessId && !!ruleId,
   });
 };

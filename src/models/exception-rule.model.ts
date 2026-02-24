@@ -18,6 +18,7 @@ export const CreateExceptionRuleSchema = z.object({
   endTime: z.string().optional(),
   isAvailable: z.boolean(),
   reason: z.string().optional(),
+  courtIds: z.array(z.string().uuid()).optional(),
 });
 
 export const UpdateExceptionRuleSchema = CreateExceptionRuleSchema.partial();

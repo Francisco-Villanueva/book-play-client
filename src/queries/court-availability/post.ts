@@ -1,18 +1,19 @@
 import { ACCESS_TOKEN_KEY } from "@/context/auth.context";
-import type { TCourtAvailability, TCreateCourtAvailabilityInput } from "@/models/court-availability.model";
 import { CourtAvailabilityService } from "@/services/court-availability.service";
 import { setAuthInterceptor } from "@/utils/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const addCourtAvailability = async ({
+  businessId,
   courtId,
   data,
 }: {
+  businessId: string;
   courtId: string;
-  data: TCreateCourtAvailabilityInput;
-}): Promise<TCourtAvailability> => {
+  data: { ruleId: string };
+}): Promise<void> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return CourtAvailabilityService.addCourtAvailability(courtId, data);
+  await CourtAvailabilityService.addCourtAvailability(businessId, courtId, data);
 };
 
 export const useAddCourtAvailabilityMutation = () => {
@@ -21,7 +22,7 @@ export const useAddCourtAvailabilityMutation = () => {
     mutationFn: addCourtAvailability,
     mutationKey: ["court-availability"],
     onSuccess: (_, { courtId }) => {
-      queryClient.invalidateQueries({ queryKey: ["court", courtId, "availability"] });
+      queryClient.invalidateQueries({ queryKey: ["court", courtId, "availability-rules"] });
     },
   });
 };
