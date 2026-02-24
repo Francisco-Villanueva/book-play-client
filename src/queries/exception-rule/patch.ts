@@ -10,12 +10,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 const updateExceptionRule = async ({
   ruleId,
   data,
+  businessId,
 }: {
+  businessId: string;
   ruleId: string;
   data: TUpdateExceptionRuleInput;
 }): Promise<TExceptionRule> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return ExceptionRuleService.updateExceptionRule(ruleId, data);
+  return ExceptionRuleService.updateExceptionRule(businessId, ruleId, data);
 };
 
 export const useUpdateExceptionRuleMutation = () => {

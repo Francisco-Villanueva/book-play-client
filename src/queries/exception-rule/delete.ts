@@ -5,11 +5,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const deleteExceptionRule = async ({
   ruleId,
+  businessId,
 }: {
+  businessId: string;
   ruleId: string;
 }): Promise<void> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  await ExceptionRuleService.deleteExceptionRule(ruleId);
+  await ExceptionRuleService.deleteExceptionRule(businessId, ruleId);
 };
 
 export const useDeleteExceptionRuleMutation = () => {

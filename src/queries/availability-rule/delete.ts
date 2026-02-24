@@ -5,11 +5,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const deleteAvailabilityRule = async ({
   ruleId,
+  businessId,
 }: {
+  businessId: string;
   ruleId: string;
 }): Promise<void> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  await AvailabilityRuleService.deleteAvailabilityRule(ruleId);
+  await AvailabilityRuleService.deleteAvailabilityRule(businessId, ruleId);
 };
 
 export const useDeleteAvailabilityRuleMutation = () => {

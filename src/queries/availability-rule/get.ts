@@ -4,14 +4,19 @@ import { AvailabilityRuleService } from "@/services/availability-rule.service";
 import { setAuthInterceptor } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchAvailabilityRules = async (businessId: string): Promise<TAvailabilityRule[]> => {
+const fetchAvailabilityRules = async (
+  businessId: string,
+): Promise<TAvailabilityRule[]> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
   return AvailabilityRuleService.getAvailabilityRules(businessId);
 };
 
-const fetchAvailabilityRule = async (ruleId: string): Promise<TAvailabilityRule> => {
+const fetchAvailabilityRule = async (
+  ruleId: string,
+  businessId: string,
+): Promise<TAvailabilityRule> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return AvailabilityRuleService.getAvailabilityRuleDetails(ruleId);
+  return AvailabilityRuleService.getAvailabilityRuleDetails(businessId, ruleId);
 };
 
 export const useAvailabilityRulesByBusinessQuery = (businessId: string) => {
@@ -22,10 +27,16 @@ export const useAvailabilityRulesByBusinessQuery = (businessId: string) => {
   });
 };
 
-export const useAvailabilityRuleQuery = (ruleId: string) => {
+export const useAvailabilityRuleQuery = ({
+  ruleId,
+  businessId,
+}: {
+  ruleId: string;
+  businessId: string;
+}) => {
   return useQuery({
     queryKey: ["availability-rule", ruleId],
-    queryFn: () => fetchAvailabilityRule(ruleId),
+    queryFn: () => fetchAvailabilityRule(ruleId, businessId),
     enabled: !!ruleId,
   });
 };

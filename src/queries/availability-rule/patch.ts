@@ -10,12 +10,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 const updateAvailabilityRule = async ({
   ruleId,
   data,
+  businessId,
 }: {
+  businessId: string;
   ruleId: string;
   data: TUpdateAvailabilityRuleInput;
 }): Promise<TAvailabilityRule> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
-  return AvailabilityRuleService.updateAvailabilityRule(ruleId, data);
+  return AvailabilityRuleService.updateAvailabilityRule(
+    businessId,
+    ruleId,
+    data,
+  );
 };
 
 export const useUpdateAvailabilityRuleMutation = () => {
