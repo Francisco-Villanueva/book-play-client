@@ -4,7 +4,9 @@ import { AvailabilityRuleService } from "@/services/availability-rule.service";
 import { setAuthInterceptor } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchAvailabilityRules = async (businessId: string): Promise<TAvailabilityRule[]> => {
+const fetchAvailabilityRules = async (
+  businessId: string,
+): Promise<TAvailabilityRule[]> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
   return AvailabilityRuleService.getAvailabilityRules(businessId);
 };

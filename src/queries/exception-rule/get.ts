@@ -4,7 +4,9 @@ import { ExceptionRuleService } from "@/services/exception-rule.service";
 import { setAuthInterceptor } from "@/utils/api";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchExceptionRules = async (businessId: string): Promise<TExceptionRule[]> => {
+const fetchExceptionRules = async (
+  businessId: string,
+): Promise<TExceptionRule[]> => {
   await setAuthInterceptor(localStorage.getItem(ACCESS_TOKEN_KEY));
   return ExceptionRuleService.getExceptionRules(businessId);
 };
