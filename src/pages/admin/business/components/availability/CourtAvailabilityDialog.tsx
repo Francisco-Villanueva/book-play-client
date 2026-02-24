@@ -8,6 +8,7 @@ import { useCourtAvailabilityQuery } from "@/queries/court-availability/get";
 import { useAddCourtAvailabilityMutation } from "@/queries/court-availability/post";
 import { useRemoveCourtAvailabilityMutation } from "@/queries/court-availability/delete";
 import { useExceptionRulesByBusinessQuery } from "@/queries/exception-rule/get";
+import { useUpdateExceptionRuleMutation } from "@/queries/exception-rule/patch";
 import { useDeleteExceptionRuleMutation } from "@/queries/exception-rule/delete";
 
 import { Button } from "@/components/ui/button";
@@ -60,6 +61,7 @@ export function CourtAvailabilityDialog({
   const addCourtAvailabilityMutation = useAddCourtAvailabilityMutation();
   const removeCourtAvailabilityMutation = useRemoveCourtAvailabilityMutation();
   const deleteAvailabilityRuleMutation = useDeleteAvailabilityRuleMutation();
+  const updateExceptionRuleMutation = useUpdateExceptionRuleMutation();
   const deleteExceptionRuleMutation = useDeleteExceptionRuleMutation();
 
   // Rules assigned to this court (full rule objects returned by the API)
@@ -69,6 +71,30 @@ export function CourtAvailabilityDialog({
 
   function isRuleAssigned(ruleId: string) {
     return courtAvailabilityRules.some((r) => r.id === ruleId);
+  }
+
+  function isExceptionAssigned(ruleId: string) {
+    const rule = exceptionRules.find((r) => r.id === ruleId);
+    return rule?.courts?.some((c) => c.id === courtId) ?? false;
+  }
+
+  async function handleToggleException(ruleId: string) {
+    const rule = exceptionRules.find((r) => r.id === ruleId);
+    if (!rule) return;
+    const currentCourtIds = rule.courts?.map((c) => c.id) ?? [];
+    const assigned = isExceptionAssigned(ruleId);
+    const newCourtIds = assigned
+      ? currentCourtIds.filter((id) => id !== courtId)
+      : [...currentCourtIds, courtId];
+    try {
+      await updateExceptionRuleMutation.mutateAsync({
+        businessId,
+        ruleId,
+        data: { courtIds: newCourtIds },
+      });
+    } catch {
+      sileo.error({ title: "No se pudo actualizar la asignación" });
+    }
   }
 
   async function handleToggleAvailability(ruleId: string) {
@@ -124,6 +150,8 @@ export function CourtAvailabilityDialog({
   const isAvailabilityToggling =
     addCourtAvailabilityMutation.isPending ||
     removeCourtAvailabilityMutation.isPending;
+
+  const isExceptionToggling = updateExceptionRuleMutation.isPending;
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
@@ -301,6 +329,7 @@ export function CourtAvailabilityDialog({
               ) : (
                 <ul className="space-y-2">
                   {exceptionRules.map((rule) => {
+                    const assigned = isExceptionAssigned(rule.id);
                     const isDeleting = deletingExceptionRuleId === rule.id;
 
                     return (
@@ -336,7 +365,7 @@ export function CourtAvailabilityDialog({
                         {isDeleting ? (
                           <div className="flex items-center gap-2 shrink-0">
                             <span className="text-xs text-muted-foreground">
-                              ¿Eliminar?
+                              ¿Eliminar del negocio?
                             </span>
                             <Button
                               variant="destructive"
@@ -362,14 +391,30 @@ export function CourtAvailabilityDialog({
                             </Button>
                           </div>
                         ) : (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
-                            onClick={() => setDeletingExceptionRuleId(rule.id)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <Button
+                              variant={assigned ? "outline" : "default"}
+                              size="sm"
+                              className="h-7 text-xs px-2"
+                              disabled={isExceptionToggling}
+                              onClick={() => handleToggleException(rule.id)}
+                            >
+                              {isExceptionToggling && (
+                                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                              )}
+                              {assigned ? "Quitar" : "Asignar"}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                              onClick={() =>
+                                setDeletingExceptionRuleId(rule.id)
+                              }
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
                         )}
                       </li>
                     );

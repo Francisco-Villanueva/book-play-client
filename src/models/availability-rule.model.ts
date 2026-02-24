@@ -1,5 +1,7 @@
 import z from "zod";
 
+const CourtRefSchema = z.object({ id: z.string().uuid(), name: z.string() });
+
 export const AvailabilityRuleSchema = z.object({
   id: z.string().uuid(),
   businessId: z.string().uuid(),
@@ -10,6 +12,7 @@ export const AvailabilityRuleSchema = z.object({
   isActive: z.boolean(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
+  courts: z.array(CourtRefSchema).optional(),
 });
 
 export const CreateAvailabilityRuleSchema = z.object({
@@ -19,8 +22,12 @@ export const CreateAvailabilityRuleSchema = z.object({
   endTime: z.string(),
 });
 
-export const UpdateAvailabilityRuleSchema =
-  CreateAvailabilityRuleSchema.partial();
+export const UpdateAvailabilityRuleSchema = CreateAvailabilityRuleSchema
+  .partial()
+  .extend({
+    isActive: z.boolean().optional(),
+    courtIds: z.array(z.string().uuid()).optional(),
+  });
 
 export type TAvailabilityRule = z.infer<typeof AvailabilityRuleSchema>;
 export type TCreateAvailabilityRuleInput = z.infer<

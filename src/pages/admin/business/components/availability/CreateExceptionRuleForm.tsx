@@ -25,13 +25,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const formSchema = z.object({
-  date: z.string().min(1, "Requerido"),
-  startTime: z.string().optional(),
-  endTime: z.string().optional(),
-  isAvailable: z.string(),
-  reason: z.string().optional(),
-});
+const formSchema = z
+  .object({
+    date: z.string().min(1, "Requerido"),
+    startTime: z.string().optional(),
+    endTime: z.string().optional(),
+    isAvailable: z.string(),
+    reason: z.string().optional(),
+  })
+  .refine(
+    (v) => {
+      const hasStart = !!v.startTime;
+      const hasEnd = !!v.endTime;
+      return hasStart === hasEnd;
+    },
+    {
+      message: "Debés ingresar hora de inicio y hora de cierre juntas, o dejar ambas vacías",
+      path: ["endTime"],
+    },
+  );
 
 type TFormValues = z.infer<typeof formSchema>;
 

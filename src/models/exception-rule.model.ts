@@ -1,5 +1,7 @@
 import z from 'zod';
 
+const CourtRefSchema = z.object({ id: z.string().uuid(), name: z.string() });
+
 export const ExceptionRuleSchema = z.object({
   id: z.string().uuid(),
   businessId: z.string().uuid(),
@@ -10,6 +12,7 @@ export const ExceptionRuleSchema = z.object({
   reason: z.string().optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
+  courts: z.array(CourtRefSchema).optional(),
 });
 
 export const CreateExceptionRuleSchema = z.object({
